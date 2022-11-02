@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: "./Dockerfile-backend"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+    command: sh -c "python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - FRONT_URI=http://localhost:3000
+      - ALLOWED_HOST=localhost
+      - DB_HOST=db
+      - DB_NAME=backend
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+
+  frontend:
+    build:
+      context: .
+      dockerfile: "./Dockerfile-frontend"
+    volumes:
+      - ./frontend:/frontend
+    command: sh -c "npm run dev"
+    ports:
+      - "3000:3000"
