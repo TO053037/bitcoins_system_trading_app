@@ -14,10 +14,23 @@ services:
     environment:
       - FRONT_URI=http://localhost:3000
       - ALLOWED_HOST=localhost
-      - DB_HOST=db
-      - DB_NAME=backend
-      - DB_USER=postgres
-      - DB_PASS=supersecretpassword
+#      - DB_HOST=db
+#      - DB_NAME=backend
+#      - DB_USER=postgres
+#      - DB_PASS=supersecretpassword
+  get-bitcoin-price:
+    build:
+      context: .
+      dockerfile: "./Dockerfile-backend"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./backend:/backend
+    command: sh -c "python manage.py migrate &&
+      python manage.py get_bitcoin_price_backgroud"
+    environment:
+      - FRONT_URI=http://localhost:3000
+      - ALLOWED_HOST=localhost
 
   frontend:
     build:
